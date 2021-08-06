@@ -11,87 +11,73 @@ const lowOrHi = document.querySelector('.lowOrHi');
 const guessSubmit = document.querySelector('.guessSubmit');
 const guessField = document.querySelector('.guessField');
 
-guessSubmit.addEventListener('click', checkGuess);
+let guessCount = 3;
 
+let resetButton;
 
 function checkGuess() {
-  guesses.textContent = 'Your previous guesses: ';
+  let userGuess = Number(guessField.value);
 
- for(let i=3;i>=1;i--) {
+    chances.textContent = `Your Chances: ${guessCount-1}`;
 
-  let userGuess = Number(prompt());
+    if (guessCount === 3) {
+      guesses.textContent = 'Previous guesses: ';
+    }
 
-  chances.textContent = `Your chances remaining: ${i-1}`;
-  guesses.textContent += ' ' + userGuess;
+     guesses.textContent += userGuess + ' ';
 
   if (userGuess === randomNumber) {
-     lastResult.textContent = 'Congratulations! You Win!';
-     lowOrHi.textContent = '';
-     chances.textContent = '';
-     // guessSubmit.textContent = 'Start new game';
-     guesses.textContent = '';
-     setGameOver();
-     break;
+    lastResult.textContent = 'Congratulations! You Win!';
+    lastResult.style.backgroundColor = 'green';
+    lowOrHi.textContent = '';
+    chances.textContent = '';
+    setGameOver();
+  } else if (guessCount === 1) {
+    lastResult.textContent = 'You Lose!';
+    lowOrHi.textContent = '';
+    setGameOver();
+  } else {
+    lastResult.textContent = 'Wrong!';
+    lastResult.style.backgroundColor = 'red';
+    if(userGuess < randomNumber) {
+      lowOrHi.textContent = 'Correct answer is smaller!';
 
+    } else if (userGuess > randomNumber) {
+      lowOrHi.textContent = ' Correct answer is greater!';
 
-   } else if (i === 1) {
-     lastResult.textContent = 'You Lose!';
-     lowOrHi.textContent = '';
-     chances.textContent = '';
-     // guessSubmit.textContent = 'Start new game';
-     guesses.textContent = '';
-     setGameOver();
-     // break;
-     // i=0;
+    }
+  }
 
-   } else {
-     lastResult.textContent = 'Wrong!';
-     if(userGuess < randomNumber) {
-       lowOrHi.textContent = 'Correct answer is smaller!';
-
-     } else if (userGuess > randomNumber) {
-       lowOrHi.textContent = ' Correct answer is greater!';
-
-     }
+  guessCount--;
+  guessField.value = '';
 
 }
 
-}
 
-}
+guessSubmit.addEventListener('click', checkGuess);
 
-//
 function setGameOver() {
+  guessField.disabled = true;
+  guessSubmit.disabled = true;
+  resetButton = document.createElement('button');
+  resetButton.textContent = 'Start New Game';
+  document.body.appendChild(resetButton);
+  resetButton.addEventListener('click', resetGame)
 
+}
 
-  // resetButton = document.createElement('button');
-  // resetButton.textContent = 'Start new game';
-  // document.body.appendChild(resetButton);
-  if (confirm('Start New Game')) {
-  guessSubmit.addEventListener('click', checkGuess);
+function resetGame() {
+  guessCount = 3;
   const resetParas = document.querySelectorAll('.resultParas p');
-    for(let i = 0 ; i < resetParas.length ; i++) {
-      resetParas[i].textContent = '';
+  for(let i=0; i<resetParas.length;i++) {
+    resetParas[i].textContent = '';
+  }
+
+  resetButton.parentNode.removeChild(resetButton);
+  guessField.disabled = false;
+  guessSubmit.disabled = false;
+  guessField.value = '';
+
+  lastResult.style.backgroundColor = 'white';
+  randomNumber = getRandomArbitrary(1,10);
 }
-}
-// guessSubmit.value = 'Start New Game';
-}
-//
-//
-// function resetGame() {
-//
-//   const resetParas = document.querySelectorAll('.resultParas p');
-//   for(let i = 0 ; i < resetParas.length ; i++) {
-//     resetParas[i].textContent = '';
-//   }
-//   //
-//   // resetButton.parentNode.removeChild(resetButton);
-//   // guessField.disabled = false;
-//   // guessSubmit.disabled = false;
-//   // guessField.value = '';
-//   // guessField.focus();
-//   checkGuess();
-//
-//
-//
-// }
